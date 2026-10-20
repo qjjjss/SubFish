@@ -1,0 +1,28 @@
+# Python
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# 运行产物
+logs/
+*.log
+widget/state.json
+widget/.instance.lock
+
+# 模型（体积大，用 scripts/fetch_model.py 下载）
+server/models/whisper-medium/
+server/models/*/
+!server/models/silero_vad_16k_op15.onnx
+*.bin
+*.onnx.data
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,10 @@
+faster-whisper>=1.1.0
+onnxruntime>=1.18.0
+websockets>=12.0
+numpy>=1.24
+PyYAML>=6.0
+requests>=2.31
+sounddevice>=0.4.6
+pystray>=0.19          # 系统托盘常驻（M7 便利化）
+Pillow>=10.0           # 托盘图标
+nvidia-cublas-cu12 ; sys_platform == "win32"

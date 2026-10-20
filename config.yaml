@@ -1,0 +1,40 @@
+# SubFish 配置：所有可调参数集中在这里
+server:
+  host: 127.0.0.1
+  audio_port: 8765      # 音频入口：扩展/测试源 -> 服务（16kHz 单声道 s16le PCM）
+  subtitle_port: 8766   # 字幕出口：服务 -> 桌面小窗（JSON 事件）
+audio:
+  sample_rate: 16000
+  channels: 1
+  frame_ms: 20          # 每帧毫秒数（640 字节）
+languages: [zh, en, ja] # 识别范围；中文直接显示识别文本，英/日译成中文
+asr:
+  model: medium         # RTX 4060 8G 推荐 medium；显存紧张或纯 CPU 改 small
+  model_path: server/models/whisper-medium   # 本地模型目录（已内嵌，开箱即用）；留空则按模型名从 HF 下载
+  device: auto          # auto / cuda / cpu
+  compute_type: auto    # auto -> cuda:float16 / cpu:int8
+  beam_size: 1          # 解码宽度：1=贪心最快（字幕够用），3/5 更准但更慢
+  without_timestamps: true  # 不做时间戳预测，纯转写更快
+vad:
+  silence_ms: 450       # 静音多久算一句话结束（越小越跟手，太小会切断句子）
+  min_speech_ms: 250    # 短于此时长的语音段忽略
+  max_segment_ms: 6000  # 单句最长，超时强制切分（越短识别越快）
+  threshold: 0.5        # Silero 语音概率阈值
+translate:
+  engine: ollama        # ollama（全本地，默认）| deepseek（可选回退）
+  ollama:
+    base_url: http://localhost:11434/v1
+    model: qwen2.5:7b
+    temperature: 0.3
+    max_tokens: 200
+    keep_alive: 10m     # 模型常驻显存时长，避免说完一句就被卸载（首次再加载要 10s+）
+    warmup: true        # 服务启动时后台预热翻译模型（消除第一句字幕的冷启动等待）
+  deepseek:             # 仅 engine=deepseek 时使用
+    base_url: https://api.deepseek.com
+    api_key: ""         # 填你的 DeepSeek key
+    model: deepseek-chat
+display:
+  show_source: true     # 小窗同时显示英文/日文原文（M4 生效）
+  partial_first: true   # 先立刻显示识别原文，翻译好了再原地换成中文（感知延迟更低）
+log:
+  dir: logs             # 字幕 jsonl 日志目录（M3 生效）

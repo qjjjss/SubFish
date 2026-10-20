@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>SubFish</title>
+    <style>
+      :root {
+        --bg: #12161f;
+        --card: #1a2030;
+        --fg: #f2f5f9;
+        --dim: #8b95a7;
+        --ok: #4ade80;
+        --warn: #f59e0b;
+        --err: #f87171;
+        --accent: #38bdf8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        width: 300px;
+        margin: 0;
+        padding: 14px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 13px/1.5 "Microsoft YaHei UI", system-ui, sans-serif;
+      }
+      .head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .title { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; }
+      .ver { font-size: 11px; color: var(--dim); }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        margin-bottom: 8px;
+        background: var(--card);
+        border-radius: 8px;
+        font-size: 12px;
+      }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); flex: none; }
+      .dot.ok { background: var(--ok); }
+      .dot.warn { background: var(--warn); }
+      .dot.err { background: var(--err); }
+      .row .k { color: var(--dim); flex: none; }
+      .row .v { color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+      .meter {
+        height: 6px;
+        background: #10141d;
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 2px 0 10px;
+      }
+      .meter > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--ok), var(--accent));
+        transition: width 0.1s linear;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font: 600 14px/1 "Microsoft YaHei UI", system-ui, sans-serif;
+        color: #08121b;
+        background: var(--ok);
+        cursor: pointer;
+      }
+      button.stop { background: #ef4444; color: #fff; }
+      button:active { transform: translateY(1px); }
+
+      .chk {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        font-size: 11.5px;
+        color: var(--dim);
+        cursor: pointer;
+      }
+      .chk input { accent-color: var(--ok); }
+
+      .msg {
+        min-height: 32px;
+        margin-top: 10px;
+        padding: 7px 9px;
+        border-radius: 8px;
+        font-size: 11.5px;
+        color: var(--dim);
+        background: #171c27;
+      }
+      .msg.err { color: #fecaca; background: #2a1618; }
+
+      .foot {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--dim);
+      }
+      .foot input {
+        width: 62px;
+        padding: 3px 6px;
+        border: 1px solid #2b3444;
+        border-radius: 5px;
+        background: #10141d;
+        color: var(--fg);
+        font: inherit;
+      }
+      .hint { margin-top: 8px; font-size: 11px; color: #5b6577; }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <span class="title">SubFish 实时字幕</span>
+      <span class="ver">v1.0</span>
+    </div>
+
+    <div class="row">
+      <span class="dot" id="dotSvc"></span>
+      <span class="k">本地服务</span>
+      <span class="v" id="svc">检查中…</span>
+    </div>
+    <div class="row">
+      <span class="dot" id="dotCap"></span>
+      <span class="k">采集页面</span>
+      <span class="v" id="cap">未开始</span>
+    </div>
+
+    <div class="row">
+      <span class="dot" id="dotRate"></span>
+      <span class="k">音频速率</span>
+      <span class="v" id="rate">-</span>
+    </div>
+
+    <div class="meter"><i id="level"></i></div>
+
+    <button id="toggle">开始采集</button>
+
+    <label class="chk"><input type="checkbox" id="monitor" checked /> 视频声音继续播放</label>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="foot">
+      <span>音频端口</span>
+      <input id="port" type="number" min="1" max="65535" />
+      <span id="portTip"></span>
+    </div>
+    <div class="hint">字幕显示在桌面小窗里（由 启动.bat 拉起）。</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
